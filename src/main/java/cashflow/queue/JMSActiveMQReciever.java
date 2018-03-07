@@ -25,6 +25,7 @@ public class JMSActiveMQReciever implements Runnable {
 	private Destination destination;
 	private MessageConsumer consumer;
 	private Consumer<String> store;
+	private ExceptionListener listener;
 
 	public static JMSActiveMQReciever getMessageReciever(ExceptionListener listener, Consumer<String> store,
 			String brokerURL, String queue) {
@@ -78,8 +79,9 @@ public class JMSActiveMQReciever implements Runnable {
 
 	@Override
 	public void run() {
-		while (!done && !error) {
-			try {
+		try {
+			while (!done && !error) {
+
 				logger.info("waiting message");
 				Message message = consumer.receive();
 
@@ -91,27 +93,37 @@ public class JMSActiveMQReciever implements Runnable {
 				} else {
 					logger.info("Received: " + message);
 				}
-				message.acknowledge();
-			} catch (JMSException e) {
-				setError("Error receiving message", e);
+				if (message != null) {
+					message.acknowledge();
+				}
 			}
+		} catch (JMSException e) {
+			listener.onException(e);
 		}
+
 	}
 
 	public void setDone() {
+		logger.info("Stopping MessageReciever for broker ");
 		this.done = Boolean.TRUE;
 		try {
-			consumer.close();
+			if (consumer != null) {
+				consumer.close();
+			}
 		} catch (JMSException e) {
 			setError("error closing consumer", e);
 		}
 		try {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
 		} catch (JMSException e1) {
 			setError("error closing session", e1);
 		}
 		try {
-			connection.close();
+			if (connection != null) {
+				connection.close();
+			}
 		} catch (JMSException e1) {
 			setError("error closing connection", e1);
 		}

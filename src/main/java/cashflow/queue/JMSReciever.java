@@ -20,6 +20,7 @@ public class JMSReciever extends Receiver<String> {
 		super(storageLevel);
 		this.brokerURL = brokerURL;
 		this.queue = queue;
+		System.out.println("JMSReciever created");
 	}
 
 	@Override
@@ -37,8 +38,7 @@ public class JMSReciever extends Receiver<String> {
 	}
 
 	public synchronized void onException(JMSException ex) {
-		ex.printStackTrace();
-		super.restart(ex.getMessage());
+		super.restart(ex.getMessage(), ex);
 	}
 
 }
