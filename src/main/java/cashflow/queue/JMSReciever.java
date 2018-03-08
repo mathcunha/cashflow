@@ -25,16 +25,20 @@ public class JMSReciever extends Receiver<String> {
 
 	@Override
 	public void onStart() {
-		receiver = JMSActiveMQReciever.getMessageReciever(this::onException, super::store, brokerURL, queue);
-		while (receiver.hasError()) {
+		try {
 			receiver = JMSActiveMQReciever.getMessageReciever(this::onException, super::store, brokerURL, queue);
+			(new Thread(receiver::run)).start();
+		} catch (JMSException e) {
+			onException(e);
 		}
-		(new Thread(receiver)).start();
 	}
 
 	@Override
 	public void onStop() {
-		receiver.setDone();
+		if(receiver != null) {
+			receiver.setDone();
+			receiver = null;
+		}
 	}
 
 	public synchronized void onException(JMSException ex) {

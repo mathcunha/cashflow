@@ -15,7 +15,7 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-public class JMSActiveMQReciever implements Runnable {
+public class JMSActiveMQReciever {
 
 	private Boolean done = Boolean.FALSE;
 	private Boolean error = Boolean.FALSE;
@@ -28,56 +28,34 @@ public class JMSActiveMQReciever implements Runnable {
 	private ExceptionListener listener;
 
 	public static JMSActiveMQReciever getMessageReciever(ExceptionListener listener, Consumer<String> store,
-			String brokerURL, String queue) {
+			String brokerURL, String queue) throws JMSException {
 		return new JMSActiveMQReciever(listener, store, brokerURL, queue);
 	}
 
-	private JMSActiveMQReciever(ExceptionListener listener, Consumer<String> store, String brokerURL, String queue) {
+	private JMSActiveMQReciever(ExceptionListener listener, Consumer<String> store, String brokerURL, String queue) throws JMSException {
 		this.store = store;
-		logger.info("Creating MessageReciever for broker " + brokerURL + " and queue " + queue);
+		logger.info("Creating JMSActiveMQReciever for broker " + brokerURL + " and queue " + queue);
 		// Create a ConnectionFactory
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("admin", "admin", brokerURL);
 		try {
 			connection = connectionFactory.createConnection();
+
 			connection.start();
 			connection.setExceptionListener(listener);
-		} catch (JMSException e) {
-			setError("error starting connection", e);
-		}
 
-		// Create a Session
-		try {
+			// Create a Session
 			session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-		} catch (JMSException e) {
-			setError("error starting session", e);
-			try {
-				connection.close();
-			} catch (JMSException e1) {
-				setError("error closing connection", e1);
-			}
-		}
-
-		try {
 			// Create the destination (Topic or Queue)
 			destination = session.createQueue(queue);
 			// Create a MessageConsumer from the Session to the Topic or Queue
 			consumer = session.createConsumer(destination);
+
 		} catch (JMSException e) {
-			setError("error starting destination/consumer", e);
-			try {
-				session.close();
-			} catch (JMSException e1) {
-				setError("error closing session", e1);
-			}
-			try {
-				connection.close();
-			} catch (JMSException e1) {
-				setError("error closing connection", e1);
-			}
+			setDone();
+			throw e;
 		}
 	}
 
-	@Override
 	public void run() {
 		try {
 			while (!done && !error) {
@@ -104,7 +82,7 @@ public class JMSActiveMQReciever implements Runnable {
 	}
 
 	public void setDone() {
-		logger.info("Stopping MessageReciever for broker ");
+		logger.info("setDone for JMSActiveMQReciever");
 		this.done = Boolean.TRUE;
 		try {
 			if (consumer != null) {
