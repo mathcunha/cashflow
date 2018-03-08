@@ -17,6 +17,7 @@ public class Transaction implements Serializable{
 	private String account;
 	private Float value;
 	private String city;
+	private String key;
 
 	@Override
 	public String toString() {
@@ -73,5 +74,13 @@ public class Transaction implements Serializable{
 			e.printStackTrace();
 		}
 		return t;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 }
