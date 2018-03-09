@@ -1,0 +1,16 @@
+[
+  {
+    "date": "2018-02-20",
+    "costumer": "costumer_1",
+    "account": "A",
+    "city": "Santa Barbara",
+    "value": 12
+  },
+  {
+    "date": "2018-02-20",
+    "costumer": "costumer_1",
+    "account": "B",
+    "city": "Santa Barbara",
+    "value": 14
+  }
+]

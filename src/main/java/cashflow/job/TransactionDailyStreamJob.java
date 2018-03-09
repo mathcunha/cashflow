@@ -20,7 +20,7 @@ public class TransactionDailyStreamJob {
 		SparkConf sparkConf = new SparkConf().setAppName("TransactionDailyStreamJob");
 		JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.seconds(30));		
 		//JavaReceiverInputDStream<String> transactionsBody = jssc.receiverStream(new JMSReciever("tcp://" + System.getenv("ACTIVEMQ_IP") + ":61616", "ACCOUNT-QUEUE", StorageLevels.MEMORY_AND_DISK_SER_2));
-		JavaReceiverInputDStream<String> transactionsBody = jssc.receiverStream(JMSReciever.buildJMSActiveMQReciever(loadProperties("tcp://" + System.getenv("ACTIVEMQ_IP") + ":61616", "TEST-QUEUE"), StorageLevels.MEMORY_AND_DISK_SER_2));
+		JavaReceiverInputDStream<String> transactionsBody = jssc.receiverStream(JMSReciever.buildJMSActiveMQReciever(loadProperties("tcp://" + System.getenv("ACTIVEMQ_IP") + ":61616", "ACCOUNT-QUEUE"), StorageLevels.MEMORY_AND_DISK_SER_2));
 		
 		JavaDStream<Transaction> transactions = transactionsBody.map(Transaction::fromJson).repartition(2);
 		transactions = transactions.map(t -> {
