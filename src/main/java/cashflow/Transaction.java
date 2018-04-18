@@ -2,6 +2,7 @@ package cashflow;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +13,7 @@ public class Transaction implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Date date;
+	private String date;
 	private String costumer;
 	private String account;
 	private Float value;
@@ -25,11 +26,11 @@ public class Transaction implements Serializable{
 				+ getAccount() + ", getValue()=" + getValue() + ", getCity()=" + getCity() + "]";
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
-
-	public void setDate(Date date) {
+	
+	public void setDate(String date) {
 		this.date = date;
 	}
 

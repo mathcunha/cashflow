@@ -18,11 +18,18 @@
 			<version>2.3.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-client</artifactId>
-			<version>5.15.3</version>
-		</dependency-->
+		<!--dependency> <groupId>org.apache.activemq</groupId> <artifactId>activemq-client</artifactId> 
+			<version>5.15.3</version> </dependency -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.2</version>
+		</dependency>
 		<dependency>
 			<groupId>jms-spark-reciever</groupId>
 			<artifactId>jms-spark-reciever</artifactId>
@@ -33,6 +40,11 @@
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
+		</dependency>		
+		<dependency>
+			<groupId>org.jdbi</groupId>
+			<artifactId>jdbi3-core</artifactId>
+			<version>3.1.0</version>
 		</dependency>
 	</dependencies>
 	<build>

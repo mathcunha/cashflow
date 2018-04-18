@@ -1,0 +1,1 @@
+sudo docker run -d --name kong-database -p 5432:5432 -e "POSTGRES_USER=test" -e "POSTGRES_DB=cashflow" -e "POSTGRES_PASSWORD=test" postgres:9.4;
